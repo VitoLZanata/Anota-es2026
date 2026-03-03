@@ -1,0 +1,40 @@
+Endereçamento
+
+IP (Internet Protocol)
+|_ 32 bits
+    |_ 8 bytes
+    |_ 4 grupos
+|_ separados por .
+|_ reprentados em decimal
+    |_ 0 - 255
+|_ identifica a interface (placa de rede)
+|_ ifconfig (Linux) ou ipconfig(Windows)
+    |_ mostra o IP da máquina
+
+IPv6
+|_ 2¹²⁸ = 340 undecilhões
+
+Portas
+|_ identificação do processo
+|_ nível da aplicação
+|_ 16 bits 
+    |_ 0 - 65535-
+Endereço MAC (Media Access Control)
+|_identificação física e fixa
+   |_ endereço gravado na placa de rede
+    |_ identificar processos e serviços em um dispositivo de rede
+
+
+Lo (loopback)
+|_ 127.0.0.1
+   |_ endereço virtual
+   |_ para os programas da própria maquina se conversarem
+
+Protocolos - um acordo de comunicação
+
+Nome--------|Função Principal
+Aplicação	|Suporte às aplicações de rede (como navegador, e-mail, streaming); define os dados que serão transmitidos.
+Transporte	|Comunicação confiável entre processos, controle de fluxo, controle de congestionamento.
+Rede	    |Roteamento e endereçamento lógico para entrega entre redes distintas.
+Enlace	    |Comunicação entre nós vizinhos (ex: computador e switch), com detecção e, às vezes, correção de erros.
+Física	    |Transmissão dos bits por meio físico (cabos, sinais elétricos, ondas, etc.).
