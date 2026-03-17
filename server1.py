@@ -19,7 +19,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     conn_2.sendall("[server] aguardando jogador 1 jogar".encode()) # -2
     conn_1.sendall("Jogue- (pedra, papel ou tesoura)".encode()) # -3
     jogadaJ1 = conn_1.recv(1024).decode()
-    conn_1.sendall("Aguardando jogador 2".encode()) # -4
+    conn_1.sendall("Aguardando jogador 2 jogar".encode()) # -4
     conn_2.sendall("Jogue- (pedra, papel ou tesoura)".encode()) # -3
     jogadaJ2 = conn_2.recv(1024).decode()
     conn_2.sendall("Computando vencedor!".encode()) # -4
