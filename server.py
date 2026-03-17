@@ -1,21 +1,18 @@
+# Servidor
 import socket
 
 HOST = "0.0.0.0"
-PORT = 9067
+PORT = 9002
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
-    s.listen(1)
-
-    while True:
+    while(True):
+        s.listen(1)
         conn, addr = s.accept()
-        print("Cliente:", addr)
-
+        print("Cliente: " , addr)
         with conn:
-            while True:
+            while(True):
                 data = conn.recv(1024)
-                print("Martins:" + data.decode())
-                msg = input("Servidor:")
-                conn.sendall(msg.encode())
-
-        print("desconectando")
+                result = eval(data)
+                msg = (str)(result)
+                conn.sendall(msg.encode('utf-8'))
