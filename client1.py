@@ -1,29 +1,30 @@
-# Cliente
+#Cliente 
 import socket
 
 HOST = ""
 PORT = 9002
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    #conecta com o servidor 
     s.connect((HOST, PORT))
-    msg = s.recv(1024).decode()  # -1 Você é o jogador X
+    msg = s.recv(1024).decode()
     print(msg)
 
-    msg = s.recv(1024).decode()  # -2 Aguardando jogador X conectar/jogar
+    msg = s.recv(1024).decode()
     print(msg)
 
-    msg = s.recv(1024).decode()  # -3 (Jogue)
-    print(msg)
+    while True:
+        msg = s.recv(1024).decode()
+        print(msg)
 
-    jogada = input()
-    s.sendall(jogada.encode())
+        if "Sua vez" in msg:
+            jogada = input()
+            s.sendall(jogada.encode())
 
-    msg = s.recv(1024).decode()  # -4  Aguardando jogador jogar/ computando vencedor
-    print(msg)
+        else:
+            msg = s.recv(1024).decode()
+            print(msg)
 
-    msg = s.recv(1024).decode()  # -5 resultado
-    print(msg)
+            if "venceu o jogo" in msg:
+                break
 
     print("Fim de jogo!")
-
