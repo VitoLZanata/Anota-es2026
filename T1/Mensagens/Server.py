@@ -3,7 +3,7 @@ import threading
 from time import sleep
 from datetime import datetime
 
-HOST = "192.168.246.32"
+HOST = "192.168.248.110"
 PORT = 9002
 
 PORT_CLIENT1 = 9003
@@ -61,17 +61,19 @@ def thread_conexoes():
             )
             thread.start()
 
-def thread_envio():
+def thread_enviar():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server2:
         server2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server2.bind((HOST, PORT_CLIENT1))
         server2.listen()
 
-        connR, addrR = server2.accept()
-        conexoes.append(connR)
-
         threadResposta = threading.Thread(target=enviar_mensagens_da_fila)
         threadResposta.start()
+
+        while True:
+            connR, a = server2.accept()
+            conexoes.append(connR)
+        
 
 def iniciar_servidor():
     
@@ -82,11 +84,10 @@ def iniciar_servidor():
     thread_conn.start()
 
     thread_envio = threading.Thread(
-        target=thread_envio,
+        target=thread_enviar,
         args=()
     )
-    thread_envio.start()  
-
+    thread_envio.start()    
     
 if __name__ == "__main__":
     iniciar_servidor()
