@@ -15,14 +15,13 @@ fila = []
 semaforo = threading.Semaphore(1)
 semaforoFila = threading.Semaphore(1)
 
-def receber_mensagem_cliente(conn, addr):
+def receber_mensagem_fila(conn, addr):
     print(f"[Server] Nova conexão {addr[0]}", flush=True)
     
     nome = conn.recv(1024).decode("utf-8")
     
     while True:
         mensagem = conn.recv(1024).decode("utf-8")
-        
         
         hora = datetime.now().strftime("%H:%M:%S")  
         result = f"[{nome} ({addr[0]}) {hora}]\n{mensagem}"
@@ -32,17 +31,21 @@ def receber_mensagem_cliente(conn, addr):
         semaforoFila.release()
  
 def enviar_mensagens_da_fila():
-    while True :
+    while True:
         semaforoFila.acquire()
-        for msg in fila:
+            
+        mensagens_para_enviar = list(fila)
+        fila.clear()
+        
+        semaforoFila.release()
+
+        for msg in mensagens_para_enviar:
             msg_bytes = msg.encode("utf-8") 
             
             for conn in conexoes:
                 conn.sendall(msg_bytes)
-        
-        fila.clear()
 
-def iniciar_servidor():
+def thread_conexoes():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server.bind((HOST, PORT))
@@ -55,19 +58,34 @@ def iniciar_servidor():
             connR, addrR = server.accept()
             conexoes.append(connR)
             thread = threading.Thread(
-                target=receber_mensagem_cliente,
+                target=receber_mensagem_fila,
                 args=(conn, addr),
                 daemon=True
             )
             thread.start()
 
-    with socket.socket(socket.AD_INET, socket.SOCK_STREAM) as server2:
+def thread_envio():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server2:
         server2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server2.bind((HOST_CLIENT1, PORT_CLIENT1))
         server2.listen()
 
-        threadResposta = threading.Thread(enviar_mensagens_da_fila)
+        threadResposta = threading.Thread(target=enviar_mensagens_da_fila())
         threadResposta.start()
+
+def iniciar_servidor():
+    
+    thread_conn = threading.Thread(
+        target=thread_conexoes,
+        args=(),    
+    )
+    thread_conn.start()
+
+    thread_envio = threading.Thread(
+        target=thread_envio,
+        args=()
+    )
+    thread_envio.start()  
 
     
 if __name__ == "__main__":
