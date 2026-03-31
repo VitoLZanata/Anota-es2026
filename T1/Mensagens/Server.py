@@ -6,7 +6,6 @@ from datetime import datetime
 HOST = "192.168.246.32"
 PORT = 9002
 
-HOST_CLIENT1 = "192.168.246.32"
 PORT_CLIENT1 = 9003
 
 conexoes = []
@@ -55,8 +54,6 @@ def thread_conexoes():
 
         while True:
             conn, addr = server.accept()
-            connR, addrR = server.accept()
-            conexoes.append(connR)
             thread = threading.Thread(
                 target=receber_mensagem_fila,
                 args=(conn, addr),
@@ -67,10 +64,13 @@ def thread_conexoes():
 def thread_envio():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server2:
         server2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        server2.bind((HOST_CLIENT1, PORT_CLIENT1))
+        server2.bind((HOST, PORT_CLIENT1))
         server2.listen()
 
-        threadResposta = threading.Thread(target=enviar_mensagens_da_fila())
+        connR, addrR = server2.accept()
+        conexoes.append(connR)
+
+        threadResposta = threading.Thread(target=enviar_mensagens_da_fila)
         threadResposta.start()
 
 def iniciar_servidor():
