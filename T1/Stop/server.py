@@ -8,9 +8,12 @@ PORT = 9002
 NOME = ["", ""] 
 CEP = ["", ""]
 
+N_J = 5
+
 ALFABETO = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 WAITING_TIME = 3
 semaforo = threading.Semaphore(0)
+semaforoJogadores = threading.Semaphore(N_J)
 
 def atender_cliente(conn, addr, jogador_id, letraEscolhida):
     print(f"[Server] Nova conexão {addr}", flush=True)
