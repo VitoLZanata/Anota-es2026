@@ -12,13 +12,13 @@ N_R = 3  # Quantidade de rodadas
 ALFABETO = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 # --- LISTAS GLOBAIS (INICIALIZADAS COM TAMANHO N_J) ---
-NOME = [""] * N_J 
-CEP = [""] * N_J
-MEU_PROFESSOr = [""] * N_J
-COR = [""] * N_J
-PONTOS = [0] * N_J
-CONEXOES = [None] * N_J
-LETRA_COMPARTILHADA = [""]
+NOME = []
+CEP = []
+MEU_PROFESSOr = []
+COR = []
+PONTOS = []
+CONEXOES = []
+LETRA_COMPARTILHADA = []
 
 # --- SINCRONIZAÇÃO ---
 barreira = threading.Barrier(N_J)
@@ -79,7 +79,7 @@ def jogo(conn, addr, jogador_id):
     # --- FINAL DO JOGO ---
     barreira.wait() # Garante que todos saíram do loop de rodadas
     
-    # Lógica do Vencedor
+    #Vencedor
     maior_pontuacao = max(PONTOS)
     vencedor_id = PONTOS.index(maior_pontuacao)
     
