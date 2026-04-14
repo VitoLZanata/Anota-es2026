@@ -9,11 +9,11 @@ client.py: Interface onde o jogador recebe a letra e envia as respostas dos camp
 
 Como rodar:
 
-Configuração: Ajuste o HOST para o IP do servidor. O código está configurado para 2 jogadores (N_J) e 3 rodadas (N_R).
+Configuração: Ajuste o HOST para o IP do servidor. O código está configurado para 2 jogadores (N_J) e 3 rodadas (N_R). Alterar nas decalrações das constantes no topo do código
 
-Servidor: Execute python server.py. Ele aguardará a conexão de todos os jogadores antes de iniciar.
+Servidor: Execute python3 server.py. Ele aguardará a conexão de todos os jogadores antes de iniciar.
 
-Jogadores: Execute python client.py em terminais separados para cada participante.
+Jogadores: Execute python3 client.py em terminais separados para cada participante.
 
 Regras e Fluxo:
 
