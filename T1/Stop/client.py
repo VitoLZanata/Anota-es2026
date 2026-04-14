@@ -1,6 +1,6 @@
 import socket
 
-# --- CONFIGURAÇÕES ---
+
 HOST = "192.168.248.116"
 PORT = 9002
 U = "utf-8"

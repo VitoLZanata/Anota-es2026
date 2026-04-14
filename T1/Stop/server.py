@@ -3,15 +3,14 @@ import threading
 import random
 import time
 
-# --- CONFIGURAÇÕES ---
 HOST = "192.168.248.116"
 PORT = 9002
 U = "utf-8"
-N_J = 2  # Quantidade de jogadores para iniciar
-N_R = 3  # Quantidade de rodadas
+N_J = 2  # Quantidade de jogadores para iniciar / Numero de Jogadores
+N_R = 3  # Quantidade de rodadas / Numero de Rodadas
 ALFABETO = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-# --- LISTAS GLOBAIS (INICIALIZADAS COM TAMANHO N_J) ---
+
 NOME = []
 CEP = []
 MEU_PROFESSOr = []
@@ -20,10 +19,9 @@ PONTOS = []
 CONEXOES = []
 LETRA_COMPARTILHADA = []
 
-# --- SINCRONIZAÇÃO ---
 barreira = threading.Barrier(N_J)
 
-def verificar_ocorrencia(lista, j):
+def verificar_ocorrencia_pontos(lista, j):
     # x = 1 se for repetido ou vazio, x = 3 se for único
     x = 3
     # Se o campo estiver vazio, não ganha pontos
@@ -50,7 +48,6 @@ def jogo(conn, addr, jogador_id):
         letra = LETRA_COMPARTILHADA[0]
         conn.sendall(f"\n--- RODADA {j+1} --- \nLetra da rodada: {letra}\n".encode(U))
         
-        # Recebendo os dados e salvando direto no índice do jogador
         # .strip() remove espaços extras e o \n do terminal
         NOME[jogador_id] = conn.recv(1024).decode(U).strip()
         CEP[jogador_id] = conn.recv(1024).decode(U).strip()
@@ -61,14 +58,14 @@ def jogo(conn, addr, jogador_id):
         barreira.wait()
         
         # Calcula pontos chamando seu método para cada lista
-        v1 = verificar_ocorrencia(NOME, jogador_id)
-        v2 = verificar_ocorrencia(CEP, jogador_id)
-        v3 = verificar_ocorrencia(MEU_PROFESSOr, jogador_id)
-        v4 = verificar_ocorrencia(COR, jogador_id)
+        v1 = verificar_ocorrencia_pontos(NOME, jogador_id)
+        v2 = verificar_ocorrencia_pontos(CEP, jogador_id)
+        v3 = verificar_ocorrencia_pontos(MEU_PROFESSOr, jogador_id)
+        v4 = verificar_ocorrencia_pontos(COR, jogador_id)
         
         total_da_rodada = v1 + v2 + v3 + v4
         
-        # BARREIRA 2: Espera todos calcularem antes de enviar o status
+        # Barreira 2: Espera todos calcularem antes de enviar o status
         barreira.wait()
         
         msg_status = f"Voce fez {total_da_rodada} pontos nesta rodada. Total acumulado: {PONTOS[jogador_id]}\n"
@@ -76,7 +73,7 @@ def jogo(conn, addr, jogador_id):
         
         j += 1
 
-    # --- FINAL DO JOGO ---
+    # --- Final do Jogo
     barreira.wait() # Garante que todos saíram do loop de rodadas
     
     #Vencedor
@@ -91,7 +88,6 @@ def jogo(conn, addr, jogador_id):
 
 def iniciar_servidor():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-        # Permite reiniciar o servidor sem erro de "Address already in use"
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server.bind((HOST, PORT))
         server.listen()
@@ -102,7 +98,7 @@ def iniciar_servidor():
         idx = 0
         while idx < N_J:
             conn, addr = server.accept()
-            CONEXOES[idx] = conn # Salva a conexão para uso futuro se precisar
+            CONEXOES[idx] = conn 
             
             thread = threading.Thread(
                 target=jogo, 
