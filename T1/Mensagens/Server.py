@@ -2,7 +2,7 @@ import socket
 import threading
 from datetime import datetime
 
-HOST = "192.168.248.110"
+HOST = "0.0.0.0"
 PORT = 9002
 
 PORT_CLIENT1 = 9003

@@ -3,7 +3,7 @@ import threading
 import random
 import time
 
-HOST = "192.168.248.102"
+HOST = "0.0.0.0"
 PORT = 9002
 U = "utf-8"
 N_J = 2  # Quantidade de jogadores para iniciar / Numero de Jogadores

@@ -1,26 +1,39 @@
-Jogo de STOP
-O jogo funciona de forma síncrona, onde o servidor coordena as rodadas e a pontuação entre os jogadores conectados.
+Jogo de STOP 
+O jogo funciona de forma coordenada, onde o servidor atua como o mestre da partida, gerenciando o sorteio de letras, a sincronização do tempo entre os jogadores e o cálculo da pontuação.
 
-Arquivos:
+Arquivos
+server.py: Responsável por realizar o sorteio das letras, utilizar barreiras para garantir que todos os jogadores comecem e terminem ao mesmo tempo, e processar a lógica de pontuação comparando as respostas recebidas.
 
-server.py: Realiza o sorteio das letras, utiliza barreiras para sincronizar os jogadores e calcula os pontos de cada rodada.
+client.py: Interface de terminal para o jogador. Recebe a letra sorteada do servidor, solicita o preenchimento dos campos e envia as respostas para avaliação.
 
-client.py: Interface onde o jogador recebe a letra e envia as respostas dos campos solicitados.
+Como rodar
+1. Configuração
 
-Como rodar:
+Ajuste a variável HOST para o endereço IP do servidor no cliente.
 
-Configuração: Ajuste o HOST para o IP do servidor. O código está configurado para 2 jogadores (N_J) e 3 rodadas (N_R). Alterar nas decalrações das constantes no topo do código
+Parâmetros: O código está pré-configurado para 2 jogadores (N_J) e 3 rodadas (N_R). Estas constantes podem ser alteradas no topo dos código.
 
-Servidor: Execute python3 server.py. Ele aguardará a conexão de todos os jogadores antes de iniciar.
+2. Execução do Servidor
 
-Jogadores: Execute python3 client.py em terminais separados para cada participante.
+Execute python3 server.py.
 
-Regras e Fluxo:
+O servidor entrará em estado de espera e só iniciará a partida após a conexão de todos os N_J jogadores definidos.
 
-Após a conexão de todos, o servidor envia a letra sorteada.
+3. Execução dos Jogadores
 
-Os jogadores preenchem NOME, CEP, PROFESSOR e COR.
+Execute python3 client.py em terminais diferentes, um para cada participante.
 
-A pontuação é de 3 pontos para respostas únicas, 1 ponto para repetidas e 0 para campos vazios.
+Regras e Fluxo
+Início: Após a conexão de todos, o servidor sorteia e envia uma letra.
 
-O resultado acumulado é exibido após cada rodada e o vencedor é anunciado ao final.
+Preenchimento: Os jogadores devem preencher os campos: NOME, CEP, PROFESSOR e COR.
+
+Pontuação:
+
+3 pontos: Resposta válida e única (nenhum outro jogador escreveu igual).
+
+1 ponto: Resposta válida, mas repetida por outro jogador.
+
+0 pontos: Campo vazio ou inválido.
+
+Finalização: O resultado acumulado é exibido após cada rodada e o vencedor é anunciado ao final da última rodada.
