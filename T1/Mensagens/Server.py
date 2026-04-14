@@ -1,6 +1,5 @@
 import socket
 import threading
-from time import sleep
 from datetime import datetime
 
 HOST = "192.168.248.110"
