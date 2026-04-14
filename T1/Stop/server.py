@@ -3,21 +3,21 @@ import threading
 import random
 import time
 
-HOST = "192.168.248.116"
+HOST = "192.168.248.102"
 PORT = 9002
 U = "utf-8"
 N_J = 2  # Quantidade de jogadores para iniciar / Numero de Jogadores
 N_R = 3  # Quantidade de rodadas / Numero de Rodadas
 ALFABETO = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
+NOME = [None] * N_J
+CEP = [None] * N_J
+MEU_PROFESSOR = [None] * N_J
+COR = [None] * N_J
+PONTOS = [0] * N_J 
 
-NOME = []
-CEP = []
-MEU_PROFESSOr = []
-COR = []
-PONTOS = []
 CONEXOES = []
-LETRA_COMPARTILHADA = []
+LETRA_COMPARTILHADA = [None]
 
 barreira = threading.Barrier(N_J)
 
@@ -41,9 +41,11 @@ def jogo(conn, addr, jogador_id):
     while j < N_R:
         # O Jogador 0 sorteia a letra para todos
         if jogador_id == 0:
-            LETRA_COMPARTILHADA[0] = random.choice(ALFABETO)
+            letra_sorteada = random.choice(ALFABETO)
+            LETRA_COMPARTILHADA[0] = letra_sorteada
         
         barreira.wait() # Aguarda sorteio da letra
+
         
         letra = LETRA_COMPARTILHADA[0]
         conn.sendall(f"\n--- RODADA {j+1} --- \nLetra da rodada: {letra}\n".encode(U))
@@ -51,7 +53,7 @@ def jogo(conn, addr, jogador_id):
         # .strip() remove espaços extras e o \n do terminal
         NOME[jogador_id] = conn.recv(1024).decode(U).strip()
         CEP[jogador_id] = conn.recv(1024).decode(U).strip()
-        MEU_PROFESSOr[jogador_id] = conn.recv(1024).decode(U).strip()
+        MEU_PROFESSOR[jogador_id] = conn.recv(1024).decode(U).strip()
         COR[jogador_id] = conn.recv(1024).decode(U).strip()
         
         # BARREIRA 1: Espera todos os jogadores enviarem as respostas
@@ -60,7 +62,7 @@ def jogo(conn, addr, jogador_id):
         # Calcula pontos chamando seu método para cada lista
         v1 = verificar_ocorrencia_pontos(NOME, jogador_id)
         v2 = verificar_ocorrencia_pontos(CEP, jogador_id)
-        v3 = verificar_ocorrencia_pontos(MEU_PROFESSOr, jogador_id)
+        v3 = verificar_ocorrencia_pontos(MEU_PROFESSOR, jogador_id)
         v4 = verificar_ocorrencia_pontos(COR, jogador_id)
         
         total_da_rodada = v1 + v2 + v3 + v4
@@ -98,7 +100,7 @@ def iniciar_servidor():
         idx = 0
         while idx < N_J:
             conn, addr = server.accept()
-            CONEXOES[idx] = conn 
+            CONEXOES.append(conn)
             
             thread = threading.Thread(
                 target=jogo, 

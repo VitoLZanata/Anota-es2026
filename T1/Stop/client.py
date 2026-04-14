@@ -1,10 +1,17 @@
 import socket
 
 
-HOST = "192.168.248.116"
+HOST = "192.168.248.102"
 PORT = 9002
 U = "utf-8"
 N_R = 3 
+
+def pedir_entrada_valida(label, letra_alvo):
+    while True:
+        valor = input(f"{label}: ").strip().upper()
+        if valor and valor[0].upper() == letra_alvo.upper():
+            return valor
+        print(f"Entrada inválida! Deve começar com {letra_alvo}.")
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as cliente:
     cliente.connect((HOST, PORT))
@@ -13,22 +20,21 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as cliente:
     j = 0
     while j < N_R:
         # 1. Recebe a letra da rodada
-        mensagem_servidor = cliente.recv(1024).decode(U)
+        mensagem_servidor = cliente.recv(1024).decode(U).strip()
         print(mensagem_servidor)
+        letra_obrigatoria = mensagem_servidor[-1].upper()
+        print(f"\n--- RODADA INICIADA! Todas as palavras devem começar com: {letra_obrigatoria} ---")
+        nome_validado = pedir_entrada_valida("NOME", letra_obrigatoria)
+        cliente.sendall(nome_validado.encode(U))
 
-        # 2. Envia as respostas na ordem exata dos recvs do servidor
-        NOME = input("NOME: ")
-        cliente.sendall(NOME.encode(U))
+        cep_validado = pedir_entrada_valida("CEP", letra_obrigatoria)
+        cliente.sendall(cep_validado.encode(U))
 
-        CEP = input("CEP: ")
-        cliente.sendall(CEP.encode(U))
+        prof_validado = pedir_entrada_valida("MEU PROFESSOR", letra_obrigatoria)
+        cliente.sendall(prof_validado.encode(U))
 
-        MEU_PROFESSOr = input("MEU PROFESSOR: ")
-        cliente.sendall(MEU_PROFESSOr.encode(U))
-
-        COR = input("COR: ")
-        cliente.sendall(COR.encode(U))
-
+        cor_validada = pedir_entrada_valida("COR", letra_obrigatoria)
+        cliente.sendall(cor_validada.encode(U))
         print("\n[*] Aguardando processamento da rodada...")
 
         # 3. Recebe a parcial de pontos
