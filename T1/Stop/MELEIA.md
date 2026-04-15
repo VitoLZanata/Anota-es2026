@@ -15,6 +15,8 @@ Parâmetros: O código está pré-configurado para 2 jogadores (N_J) e 3 rodadas
 
 2. Execução do Servidor
 
+Acesse o diretório o qual se encontra os arquivos cLient.py e server.py.
+
 Execute python3 server.py.
 
 O servidor entrará em estado de espera e só iniciará a partida após a conexão de todos os N_J jogadores definidos.
